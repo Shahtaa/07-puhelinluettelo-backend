@@ -26,6 +26,17 @@ let persons = [
 app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
+app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id);
+    const person = persons.find(person => person.id === String(id)); // Ensure id comparison is with a string
+    if (person) {
+        response.json(person);
+    } else {
+        console.log('x');
+        response.status(404).end();
+    }
+});
+
 app.get('/info', (request, response) => {
     const currentTime = new Date();
     const infoMessage = `Phonebook has info for ${persons.length} people`;
