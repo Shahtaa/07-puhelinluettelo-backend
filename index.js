@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-
 let persons = [
     {
         id: "1",
@@ -24,65 +23,15 @@ let persons = [
     }
 ]
 
-
-app.use(express.json())
-
-app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
-})
-
 app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
+app.get('/info', (request, response) => {
+    const currentTime = new Date();
+    const infoMessage = `Phonebook has info for ${persons.length} people`;
 
-const generateId = () => {
-    const maxId = persons.length > 0
-        ? Math.max(...persons.map(person => Number(person.id)))
-        : 0;
-    return maxId + 1;
-}
-
-
-app.post('/api/persons', (request, response) => {
-    const body = request.body;
-
-    if (!body.name || !body.number) {
-        return response.status(400).json({
-            error: 'name or number missing'
-        });
-    }
-
-    const person = {
-        name: body.name,
-        number: body.number,
-        id: generateId(),
-    };
-
-    persons = persons.concat(person);
-
-    response.json(person);
+    response.send(`<p>${infoMessage}</p><p>${currentTime}</p>`);
 });
-
-
-app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id;
-    const person = persons.find(person => person.id === id);
-    if (person) {
-        response.json(person);
-    } else {
-        console.log('x');
-        response.status(404).end();
-    }
-});
-
-
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-
-    response.status(204).end()
-})
-
 const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
