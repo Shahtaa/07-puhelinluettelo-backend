@@ -4,7 +4,17 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // JSON body parser
-app.use(morgan('tiny')); // Logging with Morgan
+
+// Custom token to log request body data for HTTP POST requests
+morgan.token('postData', (req, res) => {
+    if (req.method === 'POST') {
+        return JSON.stringify(req.body); // Convert request body to JSON string
+    }
+    return ''; // Return empty string for non-POST requests
+});
+
+// Logging with Morgan, including request body for POST requests
+app.use(morgan(':method :url :status :response-time ms - :postData'));
 
 // Data
 let persons = [
