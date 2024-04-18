@@ -43,6 +43,13 @@ app.get('/info', (request, response) => {
 
     response.send(`<p>${infoMessage}</p><p>${currentTime}</p>`);
 });
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id);
+    persons = persons.filter(person => person.id !== String(id)); // Ensure id comparison is with a string
+
+    response.status(204).end();
+});
+
 const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
