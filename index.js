@@ -1,5 +1,7 @@
 const express = require('express')
 const app = express()
+app.use(express.json());
+
 let persons = [
     {
         id: "1",
@@ -22,6 +24,34 @@ let persons = [
         number: "39-23-6423122"
     }
 ]
+const generateId = () => {
+    const minId = 1;
+    const maxId = 1000000; // Choose a sufficiently large range
+    return Math.floor(Math.random() * (maxId - minId + 1) + minId);
+};
+app.post('/api/persons', (request, response) => {
+    const body = request.body;
+
+    if (!body.name || !body.number) {
+        return response.status(400).json({
+            error: 'name or number missing'
+        });
+    }
+
+    const person = {
+        // Generate a unique ID
+        id: generateId(),
+        name: body.name,
+        number: body.number
+
+    };
+
+    persons = persons.concat(person);
+
+    response.json(person);
+});
+
+
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
