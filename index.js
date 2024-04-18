@@ -32,24 +32,31 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
     const body = request.body;
 
+    // Check if name or number is missing
     if (!body.name || !body.number) {
         return response.status(400).json({
-            error: 'name or number missing'
+            error: 'name or number is missing'
+        });
+    }
+
+    // Check if the name already exists in the phonebook
+    if (persons.some(person => person.name === body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
         });
     }
 
     const person = {
-        // Generate a unique ID
-        id: generateId(),
         name: body.name,
-        number: body.number
-
+        number: body.number,
+        id: generateId(), // Generate a unique ID
     };
 
     persons = persons.concat(person);
 
     response.json(person);
 });
+
 
 
 
